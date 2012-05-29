@@ -78,6 +78,45 @@ end
 
 # # Install packages for virtuoso
 # sudo apt-get install autoconf automake libtool flex bison gperf gawk m4 make odbcinst libxml2-dev libssl-dev libreadline-dev
+package "autoconf" do
+	  action :install
+end
+package "automake" do
+	  action :install
+end
+package "libtool" do
+	  action :install
+end
+package "flex" do
+	  action :install
+end
+package "bison" do
+	  action :install
+end
+package "gperf" do
+	  action :install
+end
+package "gawk" do
+	  action :install
+end
+package "m4" do
+	  action :install
+end
+package "make" do
+	  action :install
+end
+package "odbcinst" do
+	  action :install
+end
+package "libxml2-dev" do
+	  action :install
+end
+package "libssl-dev" do
+	  action :install
+end
+package "libreadline-dev" do
+	  action :install
+end
 
 
 # # Install packages for raptor-utils (ruby.rdf see rubygems.org:rdf and blog.datagraph.org/:parsing-rdf-with-ruby
