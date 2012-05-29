@@ -23,7 +23,7 @@
 #sudo apt-get dist-upgrade
 
 #base packages
-%w(dpkg-dev build-essential).each do |pkg|
+%w(git dpkg-dev build-essential).each do |pkg|
   package pkg
   action :install
 end
@@ -95,20 +95,21 @@ end
 # sudo gem update --system
 # # Install gems
 # sudo gem install sqlite3             	# Basic Database
-gem_package("sqlite") do
-  gem_binary "gem"
-end
+gem_package 'sqlite'
 
 # sudo gem install rails -v 2.3.8     	# Change for your version of Rails
 gem_package("rails") do
-  gem_binary "gem"
   version "2.3.8"
+  action :install
 end
 
 # sudo gem install passenger           	# For Passenger
 # sudo gem install rdf rdf-raptor rdf-json rdf-trix sparql-client   # For Ruby RDF Gems
-
-
+gem_package 'rdf'
+gem_package 'rdf-raptor'
+gem_package 'rdf-json'
+gem_package 'rdf-trix'
+gem_package 'sparql-client'
 
 # cd .. # to get back to ~/src
 # git clone https://github.com/openlink/virtuoso-opensource.git
@@ -126,7 +127,7 @@ end
 # ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
 # make
 # sudo make install
-script "virtuoso-opensource.git" do
+script "install_virtuoso" do
   interpreter "bash"
   user "root"
   cwd "/tmp"
@@ -139,9 +140,6 @@ script "virtuoso-opensource.git" do
   make install
   EOH
 end
-
-
-
 
 # # Make a backup of the default virtuoso.ini, edit it to your specifications (See http://.... for optimal configurations based on RAM memory)
 #
