@@ -92,9 +92,7 @@ script "install_ruby193-p125" do
   EOH
 end
 
-
 #install gem dependencies
-
 # rails needs a specific version (2.3.8) # Change for your version of Rails
 gem_package("rails") do
   version "2.3.8"
@@ -108,11 +106,6 @@ end
 #gem_package 'rdf-json'
 #gem_package 'rdf-trix'
 #gem_package 'sparql-client'
-%w(sqlite rdf rdf-raptor rdf-json rdf-trix sparql-client).each do |gem|
-  gem_package gem
-end
-=======
-
 # For Ruby RDF Gems
 %w(sqlite rdf rdf-raptor rdf-json rdf-trix sparql-client).each do |gem|
   gem_package gem
