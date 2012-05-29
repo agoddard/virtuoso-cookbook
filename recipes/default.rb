@@ -23,108 +23,62 @@
 #sudo apt-get upgrade
 #sudo apt-get dist-upgrade
 
-#sudo apt-get install dpkg-dev build-essential
-package "dpkg-dev" do
-	  action :install
+#base packages
+%w(dpkg-dev build-essential).each do |pkg|
+  package pkg
+  action :install
 end
-package "build-essential" do
-	  action :install
-end
+
+
 
 # install packages for compiling ruby
-# sudo apt-get install libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev
-package "libssl-dev" do
-	  action :install
-end
-package "libreadline-dev" do
-	  action :install
-end
-package "zlib1g-dev" do
-	  action :install
-end
-package "libyaml-dev" do
-	  action :install
-end
-package "libffi-dev" do
-	  action :install
+%w(libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev).each do |pkg|
+  package pkg
+  action :install
 end
 
+
 # # install packages for sqlite
-# sudo apt-get install sqlite3 libsqlite3-dev
-package "sqlite3" do
-	  action :install
-end
-package "libsqlite3-dev" do
-	  action :install
+%w(sqlite3 libsqlite3-dev).each do |pkg|
+  package pkg
+  action :install
 end
 
 # # install packages for passenger
-# sudo apt-get install libcurl4-openssl-dev curl libxslt1-dev
-package "libcurl4-openssl-dev" do
-	  action :install
-end
-package "curl" do
-	  action :install
-end
-package "libxslt1-dev" do
-	  action :install
+%w(libcurl4-openssl-dev curl libxslt1-dev).each do |pkg|
+  package pkg
+  action :install
 end
 
 # # Install for Ruby RDF (linkeddata)
 # libxslt1-dev
-package "libxslt1-dev" do
-	  action :install
+%w(libxslt1-dev).each do |pkg|
+  package pkg
+  action :install
 end
 
 # # Install packages for virtuoso
 # sudo apt-get install autoconf automake libtool flex bison gperf gawk m4 make odbcinst libxml2-dev libssl-dev libreadline-dev
-package "autoconf" do
-	  action :install
-end
-package "automake" do
-	  action :install
-end
-package "libtool" do
-	  action :install
-end
-package "flex" do
-	  action :install
-end
-package "bison" do
-	  action :install
-end
-package "gperf" do
-	  action :install
-end
-package "gawk" do
-	  action :install
-end
-package "m4" do
-	  action :install
-end
-package "make" do
-	  action :install
-end
-package "odbcinst" do
-	  action :install
-end
-package "libxml2-dev" do
-	  action :install
-end
-package "libssl-dev" do
-	  action :install
-end
-package "libreadline-dev" do
-	  action :install
+%w(autoconf automake libtool flex bison gperf gawk m4 make odbcinst libxml2-dev libssl-dev libreadline-dev).each do |pkg|
+  package pkg
+  action :install
 end
 
 
 # # Install packages for raptor-utils (ruby.rdf see rubygems.org:rdf and blog.datagraph.org/:parsing-rdf-with-ruby
-# sudo apt-get install raptor-utils 
+%w(raptor-utils).each do |pkg|
+  package pkg
+  action :install
+end
 
 
 # # Install Imagemagick if you want it for Ruby or Virtuoso
-# sudo apt-get install imagemagick libmagickcore3-extra netpbm
+
+%w(imagemagick libmagickcore3-extra netpbm).each do |pkg|
+  package pkg
+  action :install
+end
+
 #
 # # Install Ruby from source (Ruby1.9.3-p125)
 #
