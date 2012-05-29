@@ -105,11 +105,14 @@ end
 
 # sudo gem install passenger           	# For Passenger
 # sudo gem install rdf rdf-raptor rdf-json rdf-trix sparql-client   # For Ruby RDF Gems
-gem_package 'rdf'
-gem_package 'rdf-raptor'
-gem_package 'rdf-json'
-gem_package 'rdf-trix'
-gem_package 'sparql-client'
+#gem_package 'rdf'
+#gem_package 'rdf-raptor'
+#gem_package 'rdf-json'
+#gem_package 'rdf-trix'
+#gem_package 'sparql-client'
+%w(sqlite rdf rdf-raptor rdf-json rdf-trix sparql-client).each do |gem|
+  gem_package gem
+end
 
 # cd .. # to get back to ~/src
 # git clone https://github.com/openlink/virtuoso-opensource.git
