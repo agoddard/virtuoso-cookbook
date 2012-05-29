@@ -23,7 +23,7 @@
 #sudo apt-get dist-upgrade
 
 #base packages
-%w(git dpkg-dev build-essential).each do |pkg|
+%w(git openssh-server dpkg-dev build-essential).each do |pkg|
   package pkg
   action :install
 end
@@ -135,7 +135,7 @@ script "install_virtuoso" do
   cd virtuoso-opensource
   CFLAGS="-O2 -m64"
   export CFLAGS
-  ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
+  ./autogen.sh --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
   make
   make install
   EOH
