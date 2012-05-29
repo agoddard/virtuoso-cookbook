@@ -17,9 +17,8 @@
 ## limitations under the License.
 ##
 
-
-#Install Ubuntu Server with SSH Server.
-#	sudo apt-get update
+#Install Ubuntu Server (12.04 - 64 bit) with SSH Server.
+#sudo apt-get update
 #sudo apt-get upgrade
 #sudo apt-get dist-upgrade
 
@@ -29,16 +28,13 @@
   action :install
 end
 
-
-
 # install packages for compiling ruby
 %w(libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev).each do |pkg|
   package pkg
   action :install
 end
 
-
-# # install packages for sqlite
+# install packages for sqlite
 %w(sqlite3 libsqlite3-dev).each do |pkg|
   package pkg
   action :install
@@ -50,20 +46,18 @@ end
   action :install
 end
 
-# # Install for Ruby RDF (linkeddata)
-# libxslt1-dev
+# Install libxslt1-dev for Ruby RDF (linkeddata)
 %w(libxslt1-dev).each do |pkg|
   package pkg
   action :install
 end
 
-# # Install packages for virtuoso
+# Install packages for virtuoso
 # sudo apt-get install autoconf automake libtool flex bison gperf gawk m4 make odbcinst libxml2-dev libssl-dev libreadline-dev
 %w(autoconf automake libtool flex bison gperf gawk m4 make odbcinst libxml2-dev libssl-dev libreadline-dev).each do |pkg|
   package pkg
   action :install
 end
-
 
 # # Install packages for raptor-utils (ruby.rdf see rubygems.org:rdf and blog.datagraph.org/:parsing-rdf-with-ruby
 %w(raptor-utils).each do |pkg|
@@ -71,73 +65,84 @@ end
   action :install
 end
 
-
-# # Install Imagemagick if you want it for Ruby or Virtuoso
-
+# Install Imagemagick if you want it for Ruby or Virtuoso
 %w(imagemagick libmagickcore3-extra netpbm).each do |pkg|
   package pkg
   action :install
 end
 
-#
 # # Install Ruby from source (Ruby1.9.3-p125)
-#
-# mkdir src
-#
-# cd src
-#
 # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz
-#
-# tar xzf ruby-1.9.3-p125.tar.gz
-#
-# cd ruby-1.9.3-p125
-#
-# ./configure
-#
-# make
-#
-# sudo make install
-#
+remote_file "/tmp/ruby-1.9.3-p125.tar.gz" do
+  source "ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz"
+  mode "0644"
+  checksum "8b3c035cf4f0ad6420f447d6a48e8817e5384d0504514939aeb156e251d44cce"
+end
+
+script "install_ruby193-p125" do
+  interpreter "bash"
+  user "root"
+  cwd "/tmp"
+  code <<-EOH
+  tar -zxf ruby-1.9.3-p125.tar.gz
+  cd ruby-1.9.3-p125
+  ./configure
+  make
+  make install
+  EOH
+end
+
 # sudo gem update --system
-#
 # # Install gems
-#
-# sudo gem install sqlite3                                                   # Basic Database
-#
-# sudo gem install rails -v 2.3.8                                           # Change for your version of Rails
-#
-# sudo gem install passenger                                              # For Passenger
-#
+# sudo gem install sqlite3             	# Basic Database
+gem_package("sqlite") do
+  gem_binary "gem"
+end
+
+# sudo gem install rails -v 2.3.8     	# Change for your version of Rails
+gem_package("rails") do
+  gem_binary "gem"
+  version "2.3.8"
+end
+
+# sudo gem install passenger           	# For Passenger
 # sudo gem install rdf rdf-raptor rdf-json rdf-trix sparql-client   # For Ruby RDF Gems
-#
+
+
+
 # cd .. # to get back to ~/src
-#
 # git clone https://github.com/openlink/virtuoso-opensource.git
-#
 # cd virtuoso-opensource-6.1.5
-#
-# # Set cflags for 64-bit Linux compile
-#
+git "/tmp" do
+  repository "https://github.com/openlink/virtuoso-opensource.git"
+  reference "master"
+  action :sync
+end
+
 # CFLAGS="-O2 -m64"
-#
 # export CFLAGS
 #
-# # View your configuration options
-#
-# ./configure --help'
-#
 # # Set configure note this makes isql-v rather than the package version name of isql-vt
-#
 # ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
-#
-# # Make
-#
 # make
-#
-# # Make Install
-#
 # sudo make install
-#
+script "virtuoso-opensource.git" do
+  interpreter "bash"
+  user "root"
+  cwd "/tmp"
+  code <<-EOH
+  cd virtuoso-opensource
+  CFLAGS="-O2 -m64"
+  export CFLAGS
+  ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
+  make
+  make install
+  EOH
+end
+
+
+
+
 # # Make a backup of the default virtuoso.ini, edit it to your specifications (See http://.... for optimal configurations based on RAM memory)
 #
 # # If you have multiple drives you will get the best performance if you spread your stripe segments across multiple drives. By default your
