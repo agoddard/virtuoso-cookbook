@@ -92,24 +92,22 @@ script "install_ruby193-p125" do
   EOH
 end
 
-# sudo gem update --system
-# # Install gems
-# sudo gem install sqlite3             	# Basic Database
-gem_package 'sqlite'
 
-# sudo gem install rails -v 2.3.8     	# Change for your version of Rails
+#install gem dependencies
+
+# rails needs a specific version (2.3.8) # Change for your version of Rails
 gem_package("rails") do
   version "2.3.8"
   action :install
 end
 
 # sudo gem install passenger           	# For Passenger
-# sudo gem install rdf rdf-raptor rdf-json rdf-trix sparql-client   # For Ruby RDF Gems
-gem_package 'rdf'
-gem_package 'rdf-raptor'
-gem_package 'rdf-json'
-gem_package 'rdf-trix'
-gem_package 'sparql-client'
+
+# For Ruby RDF Gems
+%w(sqlite rdf rdf-raptor rdf-json rdf-trix sparql-client).each do |gem|
+  gem_package gem
+end
+
 
 # cd .. # to get back to ~/src
 # git clone https://github.com/openlink/virtuoso-opensource.git
