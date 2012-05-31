@@ -134,6 +134,22 @@ script "install_virtuoso" do
   ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
   make
   make install
+  #startup as root user to finish install, then shutdown
+  cd /usr/local/var/lib/virtuoso/db
+  #virtuoso-t -f &
+  sudo virtuoso-t -d &
+  sleep 15
+  killall virtuoso-t
   EOH
-  #action :nothing
+end
+
+# Chown the db directory to virtuoso:virtuoso to allow user virtuoso run it
+execute "virtuoso_db_chown" do
+  cwd "/usr/local/var/lib/virtuoso/"
+  command "chown -R virtuoso:virtuoso db"
+end
+
+execute "virtuoso_start" do
+  cwd "/usr/local/var/lib/virtuoso/db"
+  command "sudo virtuoso -c 'virtuoso-t -f &'"
 end
