@@ -105,10 +105,13 @@ end
 # cd .. # to get back to ~/src
 # git clone https://github.com/openlink/virtuoso-opensource.git
 # cd virtuoso-opensource-6.1.5
-git "/tmp" do
+#git "/tmp" do
+git "/tmp/virtuoso-opensource" do
   repository "https://github.com/openlink/virtuoso-opensource.git"
   reference "master"
   action :sync
+  #notifies :run, 'script[install_virtuoso]', :immediately
+  notifies :run, 'script[install_virtuoso]', :immediately
 end
 
 # CFLAGS="-O2 -m64"
@@ -127,8 +130,10 @@ script "install_virtuoso" do
   cd /tmp/virtuoso-opensource
   CFLAGS="-O2 -m64"
   export CFLAGS
+  ./autogen.sh --enable-maintainer-mode --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
   ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
   make
   make install
   EOH
+  #action :nothing
 end
