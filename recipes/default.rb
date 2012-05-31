@@ -105,17 +105,18 @@ end
 # cd .. # to get back to ~/src
 # git clone https://github.com/openlink/virtuoso-opensource.git
 # cd virtuoso-opensource-6.1.5
-#git "/tmp" do
-#  repository "https://github.com/openlink/virtuoso-opensource.git"
-#  reference "master"
-#  action :sync
-#end
+git "/tmp" do
+  repository "https://github.com/openlink/virtuoso-opensource.git"
+  reference "master"
+  action :sync
+end
 
 # CFLAGS="-O2 -m64"
 # export CFLAGS
 #
 # # Set configure note this makes isql-v rather than the package version name of isql-vt
 # ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
+  #git clone https://github.com/openlink/virtuoso-opensource.git
 # make
 # sudo make install
 script "install_virtuoso" do
@@ -123,8 +124,7 @@ script "install_virtuoso" do
   user "root"
   cwd "/tmp"
   code <<-EOH
-  git clone https://github.com/openlink/virtuoso-opensource.git
-  cd virtuoso-opensource
+  cd /tmp/virtuoso-opensource
   CFLAGS="-O2 -m64"
   export CFLAGS
   #./autogen.sh --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
