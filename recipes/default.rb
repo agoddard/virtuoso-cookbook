@@ -127,7 +127,6 @@ script "install_virtuoso" do
   cd /tmp/virtuoso-opensource
   CFLAGS="-O2 -m64"
   export CFLAGS
-  #./autogen.sh --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
   ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
   make
   make install
