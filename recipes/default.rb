@@ -132,7 +132,7 @@ end
 # sudo make install
 script "install_virtuoso" do
   interpreter "bash"
-  user "virtuoso"
+  user "root"
   cwd "/tmp"
   code <<-EOH
   cd /tmp/virtuoso-opensource
@@ -142,26 +142,19 @@ script "install_virtuoso" do
   ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
   make
   make install
-  cp debian/init.d /etc/init.d/virtuoso
-  chmod 755 /etc/init.d/virtuoso
   #startup as root user to finish install, then shutdown
   cd /usr/local/var/lib/virtuoso/db
-  #virtuoso-t -f &
-  #sudo virtuoso-t -d &
   virtuoso-t -d &
   sleep 15
   killall virtuoso-t
   EOH
 end
+ 
+service "virtuoso" do
+	supports [ :restart, :status ]
+	action [ :enable, :start ]
+end
 
-# Chown the db directory to virtuoso:virtuoso to allow user virtuoso run it
-#execute "virtuoso_db_chown" do
-#  cwd "/usr/local/var/lib/virtuoso/"
-#  command "chown -R virtuoso:virtuoso db"
-#end
-
-  #cwd "/usr/local/var/lib/virtuoso/db"
-  #command "sudo virtuoso -c 'virtuoso-t -f &'"
-#execute "virtuoso_start" do
-#  /etc/init.d/virtuoso start
-#end
+template "/etc/init.d/virtuoso" do
+	  source "init.erb"
+end
