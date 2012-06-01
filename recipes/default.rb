@@ -149,12 +149,12 @@ script "install_virtuoso" do
   killall virtuoso-t
   EOH
 end
- 
-service "virtuoso" do
-	supports [ :restart, :status ]
-	action [ :enable, :start ]
-end
 
 template "/etc/init.d/virtuoso" do
 	  source "init.erb"
+end
+
+service "virtuoso" do
+	supports [ :restart, :status ]
+	action [ :enable, :start ]
 end
