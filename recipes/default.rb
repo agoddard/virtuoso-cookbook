@@ -102,6 +102,12 @@ end
   gem_package gem
 end
 
+user "virtuoso" do
+  comment "virtuoso user"
+  system true
+  shell "/bin/false"
+end
+
 # cd .. # to get back to ~/src
 # git clone https://github.com/openlink/virtuoso-opensource.git
 # cd virtuoso-opensource-6.1.5
@@ -110,6 +116,8 @@ git "/tmp/virtuoso-opensource" do
   repository "https://github.com/openlink/virtuoso-opensource.git"
   reference "master"
   action :sync
+  user "virtuoso"                                    
+  group "virtuoso"    
   #notifies :run, 'script[install_virtuoso]', :immediately
   notifies :run, 'script[install_virtuoso]', :immediately
 end
@@ -124,7 +132,7 @@ end
 # sudo make install
 script "install_virtuoso" do
   interpreter "bash"
-  user "root"
+  user "virtuoso"
   cwd "/tmp"
   code <<-EOH
   cd /tmp/virtuoso-opensource
@@ -134,22 +142,26 @@ script "install_virtuoso" do
   ./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-vt/" 
   make
   make install
+  cp debian/init.d /etc/init.d/virtuoso
+  chmod 755 /etc/init.d/virtuoso
   #startup as root user to finish install, then shutdown
   cd /usr/local/var/lib/virtuoso/db
   #virtuoso-t -f &
-  sudo virtuoso-t -d &
+  #sudo virtuoso-t -d &
+  virtuoso-t -d &
   sleep 15
   killall virtuoso-t
   EOH
 end
 
 # Chown the db directory to virtuoso:virtuoso to allow user virtuoso run it
-execute "virtuoso_db_chown" do
-  cwd "/usr/local/var/lib/virtuoso/"
-  command "chown -R virtuoso:virtuoso db"
-end
+#execute "virtuoso_db_chown" do
+#  cwd "/usr/local/var/lib/virtuoso/"
+#  command "chown -R virtuoso:virtuoso db"
+#end
 
-execute "virtuoso_start" do
-  cwd "/usr/local/var/lib/virtuoso/db"
-  command "sudo virtuoso -c 'virtuoso-t -f &'"
-end
+  #cwd "/usr/local/var/lib/virtuoso/db"
+  #command "sudo virtuoso -c 'virtuoso-t -f &'"
+#execute "virtuoso_start" do
+#  /etc/init.d/virtuoso start
+#end
