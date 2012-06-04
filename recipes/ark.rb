@@ -16,6 +16,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 ##
+include_recipe 'ark'
+
 
 %w(git openssh-server dpkg-dev build-essential).each do |pkg|
   package pkg
@@ -78,9 +80,9 @@ ark "virtuoso" do
   url 'https://github.com/openlink/virtuoso-opensource/tarball/master'
   extension "tar.gz"
   checksum 'ed6ff772cf34620f1bda71f667151edf1804312800dbd7f7ea42e71c07a97b06'
-  autogen_opts ['--enable-maintainer-mode','--prefix=/usr/local/','--with-readline','--program-transform-name="s/isql/isql-vt/"']
-  make_opts ['--prefix=/usr/local/','--with-readline','--program-transform-name="s/isql/isql-vt/"']
-  action [ :autogen, :configure, :build_with_make, :install_with_make ]
+  # autogen_opts ['--enable-maintainer-mode','--prefix=/usr/local/','--with-readline','--program-transform-name="s/isql/isql-vt/"']
+  autoconf_opts ['--prefix=/usr/local/','--with-readline','--program-transform-name="s/isql/isql-vt/"']
+  action [:configure, :install_with_make ]
 end 
 
 
@@ -92,11 +94,11 @@ end
   # killall virtuoso-t
 
 template "/etc/init.d/virtuoso" do
-	mode "0755" 
-	source "init.erb"
+  mode "0755" 
+  source "init.erb"
 end
 
 service "virtuoso" do
-	supports [ :restart, :status ]
-	action [ :enable, :start ]
+  action [ :enable, :start ]
 end
+
