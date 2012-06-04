@@ -17,12 +17,6 @@
 ## limitations under the License.
 ##
 
-#Install Ubuntu Server (12.04 - 64 bit) with SSH Server.
-#sudo apt-get update
-#sudo apt-get upgrade
-#sudo apt-get dist-upgrade
-
-#base packages
 %w(git openssh-server dpkg-dev build-essential).each do |pkg|
   package pkg
 end
@@ -148,10 +142,14 @@ script "install_virtuoso" do
   sleep 15
   killall virtuoso-t
   EOH
+  not_if do
+	File.exists?("/usr/local/bin/virtuoso-t")
+  end
 end
 
 template "/etc/init.d/virtuoso" do
-	  source "init.erb"
+	mode "0755" 
+	source "init.erb"
 end
 
 service "virtuoso" do
