@@ -80,18 +80,17 @@ ark "virtuoso" do
   url 'https://github.com/openlink/virtuoso-opensource/tarball/master'
   extension "tar.gz"
   checksum 'ed6ff772cf34620f1bda71f667151edf1804312800dbd7f7ea42e71c07a97b06'
-  # autogen_opts ['--enable-maintainer-mode','--prefix=/usr/local/','--with-readline','--program-transform-name="s/isql/isql-vt/"']
   autoconf_opts ['--prefix=/usr/local/','--with-readline','--program-transform-name="s/isql/isql-vt/"']
   action [:configure, :install_with_make ]
+  notifies :run, "execute[complete-install]", :immediately
 end 
 
+execute "complete-install" do
+  cwd "/usr/local/var/lib/virtuoso/db"
+  command "virtuoso-t -d &; sleep 15; killall virtuoso-t"
+  action :nothing
+end
 
-
-  #startup as root user to finish install, then shutdown
-  # cd /usr/local/var/lib/virtuoso/db
-  # virtuoso-t -d &
-  # sleep 15
-  # killall virtuoso-t
 
 template "/etc/init.d/virtuoso" do
   mode "0755" 
