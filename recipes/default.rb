@@ -17,6 +17,9 @@
 ## limitations under the License.
 ##
 
+
+
+
 %w(git openssh-server dpkg-dev build-essential).each do |pkg|
   package pkg
 end
@@ -56,26 +59,7 @@ end
   package pkg
 end
 
-# # Install Ruby from source (Ruby1.9.3-p125)
-# wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz
-#remote_file "/tmp/ruby-1.9.3-p125.tar.gz" do
-#  source "ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz"
-#  mode "0644"
-#  checksum "8b3c035cf4f0ad6420f447d6a48e8817e5384d0504514939aeb156e251d44cce"
-#end
 
-#script "install_ruby193-p125" do
-#  interpreter "bash"
-#  user "root"
-#  cwd "/tmp"
-#  code <<-EOH
-#  tar -zxf ruby-1.9.3-p125.tar.gz
-#  cd ruby-1.9.3-p125
-#  ./configure
-#  make
-#  make install
-#  EOH
-#end
 
 #install gem dependencies
 # rails needs a specific version (2.3.8) # Change for your version of Rails
@@ -84,14 +68,8 @@ gem_package("rails") do
   action :install
 end
 
-# sudo gem install passenger           	# For Passenger
-# sudo gem install rdf rdf-raptor rdf-json rdf-trix sparql-client   # For Ruby RDF Gems
-#gem_package 'rdf'
-#gem_package 'rdf-raptor'
-#gem_package 'rdf-json'
-#gem_package 'rdf-trix'
-#gem_package 'sparql-client'
-# For Ruby RDF Gems
+
+# install RDF gems
 %w(rdf rdf-raptor rdf-json rdf-trix sparql-client).each do |gem|
   gem_package gem
 end
@@ -102,17 +80,13 @@ user "virtuoso" do
   shell "/bin/false"
 end
 
-# cd .. # to get back to ~/src
-# git clone https://github.com/openlink/virtuoso-opensource.git
-# cd virtuoso-opensource-6.1.5
-#git "/tmp" do
+
 git "/tmp/virtuoso-opensource" do
   repository "https://github.com/openlink/virtuoso-opensource.git"
   reference "master"
   action :sync
   user "virtuoso"                                    
   group "virtuoso"    
-  #notifies :run, 'script[install_virtuoso]', :immediately
   notifies :run, 'script[install_virtuoso]', :immediately
 end
 
@@ -153,6 +127,6 @@ template "/etc/init.d/virtuoso" do
 end
 
 service "virtuoso" do
-	supports [ :restart, :status ]
+	supports [ :stop, :start, :restart ]
 	action [ :enable, :start ]
 end
